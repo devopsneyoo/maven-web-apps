@@ -1,0 +1,34 @@
+node{
+  def mavenHome = tool name: 'maven3.8.4'
+  stage('1Clone'){
+    git branch: 'feature', credentialsId: 'Git_Credentials', url: 'https://github.com/LandmakTechnology/paypal-web-app'
+  }
+  stage('2MavenBuild'){
+    sh "${mavenHome}/bin/mvn clean package"
+   // bat 'mvn package'
+  }
+    stage('3CodeQuality'){
+    sh "${mavenHome}/bin/mvn sonar:sonar"
+  }
+    stage('4UploadArtifacts'){
+    sh "${mavenHome}/bin/mvn deploy"
+  }
+      stage('5.Deploy2dev'){
+      deploy adapters: [tomcat9(credentialsId: 'Tomcat_Credentials', path: '', url: 'http://18.207.210.70:8080/')], contextPath: null, war: 'target/web-app.war'    
+      http://18.207.210.70:8080/web-app/
+  }
+      stage('6.Deploy2uat'){
+        sshagent(['agentcredentials']) {
+}  
+      }
+     stage('7.approval'){
+      timeout(time:8, unit:'HOURS'){
+        input message: 'Please approve deployment to Production'
+      }
+     }
+   stage('8.Deploy2prod'){
+        sshagent(['agentcredentials']) {
+        sh "scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.89.218:/opt/tomcat9/webapps/app.war"
+        
+}      
+      }
