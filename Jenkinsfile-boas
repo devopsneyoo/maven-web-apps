@@ -27,8 +27,8 @@ node{
       }
      }
    stage('8.Deploy2prod'){
-        sshagent(['agentcredentials']) {
-        sh "scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.89.218:/opt/tomcat9/webapps/app.war"
+        //sshagent(['agentcredentials']) {
+       //sh "scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.89.218:/opt/tomcat9/webapps/app.war"
         
 }      
       }
